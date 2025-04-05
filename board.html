@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JobBoardX – Professional Job Portal</title>
+
+  <!-- Bootstrap 5 CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: #0d6efd !important;
+    }
+
+    .job-card {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .job-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .modal-title {
+      color: #0d6efd;
+    }
+
+    .search-input {
+      max-width: 400px;
+    }
+
+    @media (max-width: 576px) {
+      .search-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
+    <div class="container">
+      <a class="navbar-brand" href="#">JobBoardX</a>
+      <input class="form-control ms-auto search-input" type="text" id="searchInput" placeholder="Search jobs..." />
+    </div>
+  </nav>
+
+  <!-- Job Cards Grid -->
+  <div class="container mt-5">
+    <div class="row" id="jobBoard"></div>
+  </div>
+
+  <!-- Job Modal -->
+  <div class="modal fade" id="jobModal" tabindex="-1" aria-labelledby="jobModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content p-3">
+        <div class="modal-header">
+          <h5 class="modal-title" id="jobModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted mb-1" id="modalCompany"></p>
+          <p id="modalDescription"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const jobs = [
+      {
+        title: 'Senior Frontend Developer',
+        company: 'InnovateX Labs',
+        location: 'Remote',
+        description: 'Craft enterprise-level React.js interfaces with reusable components and advanced animations.'
+      },
+      {
+        title: 'Backend Architect',
+        company: 'DataNest',
+        location: 'Hyderabad, India',
+        description: 'Architect scalable microservices using Node.js, GraphQL, and PostgreSQL.'
+      },
+      {
+        title: 'Lead UI/UX Designer',
+        company: 'Creativa',
+        location: 'Bangalore, India',
+        description: 'Lead design sprints, user research, and develop design systems with Figma.'
+      },
+      {
+        title: 'Cloud DevOps Engineer',
+        company: 'CloudCore',
+        location: 'Chennai, India',
+        description: 'Automate CI/CD pipelines with GitHub Actions, Docker, and Kubernetes.'
+      },
+      {
+        title: 'AI Product Engineer',
+        company: 'NeuroNetics',
+        location: 'Remote',
+        description: 'Deploy state-of-the-art ML models in real-time applications using TensorFlow and Flask.'
+      }
+    ];
+
+    const jobBoard = document.getElementById('jobBoard');
+    const searchInput = document.getElementById('searchInput');
+    const modal = new bootstrap.Modal(document.getElementById('jobModal'));
+    const modalTitle = document.getElementById('jobModalLabel');
+    const modalCompany = document.getElementById('modalCompany');
+    const modalDescription = document.getElementById('modalDescription');
+
+    function renderJobs(filteredJobs) {
+      jobBoard.innerHTML = '';
+      filteredJobs.forEach(job => {
+        const col = document.createElement('div');
+        col.className = 'col-lg-4 col-md-6 mb-4';
+        col.innerHTML = `
+          <div class="card job-card h-100" onclick='openJob(${JSON.stringify(job)})'>
+            <div class="card-body">
+              <h5 class="card-title">${job.title}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">${job.company}</h6>
+              <p class="card-text text-muted">${job.location}</p>
+            </div>
+          </div>
+        `;
+        jobBoard.appendChild(col);
+      });
+    }
+
+    function openJob(job) {
+      modalTitle.textContent = job.title;
+      modalCompany.textContent = `${job.company} • ${job.location}`;
+      modalDescription.textContent = job.description;
+      modal.show();
+    }
+
+    searchInput.addEventListener('input', () => {
+      const value = searchInput.value.toLowerCase();
+      const filtered = jobs.filter(job =>
+        job.title.toLowerCase().includes(value) ||
+        job.company.toLowerCase().includes(value) ||
+        job.location.toLowerCase().includes(value)
+      );
+      renderJobs(filtered);
+    });
+
+    renderJobs(jobs);
+  </script>
+</body>
+</html>
